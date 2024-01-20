@@ -230,42 +230,6 @@
       job: /home/{{ user }}/gkserver/scripts/gdrive_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/gdrive_gkserver_backup.sh" | python3 /home/{{ user }}/gkserver/scripts/discord-pipe.py
       state: present
 
-  - name: cron - backup_main test
-    cron:
-      name: "backup_main hdd test - 18th of the month"
-      minute: "0"
-      hour: "0"
-      day: "18"
-      job: /usr/sbin/smartctl --test=long /dev/sda &> /dev/null
-      state: present
-
-  - name: cron - backup_main report
-    cron:
-      name: "backup_main hdd report - 20th of the month"
-      minute: "0"
-      hour: "0"
-      day: "20"
-      job: /usr/sbin/smartctl -a /dev/sda >> /home/{{ user }}/logs/hdd_ext1_report.log && echo "/usr/sbin/smartctl -a /dev/sda" | python3 /home/{{ user }}/gkserver/scripts/discord-pipe.py
-      state: present
-
-  - name: cron - plex_library test
-    cron:
-      name: "plex_library hdd test - 22nd of the month"
-      minute: "0"
-      hour: "0"
-      day: "22"
-      job: /usr/sbin/smartctl --test=long /dev/sdb &> /dev/null
-      state: present
-
-  - name: cron - plex_library report
-    cron:
-      name: "plex_library hdd report - 24th of the month"
-      minute: "0"
-      hour: "0"
-      day: "24"
-      job: /usr/sbin/smartctl -a /dev/sdb >> /home/{{ user }}/logs/hdd_ext2_report.log && echo "/usr/sbin/smartctl -a /dev/sdb" | python3 /home/{{ user }}/gkserver/scripts/discord-pipe.py
-      state: present
-
   - name: cron - summarize backup logs
     cron:
       name: "summarize backup logs - daily 4am"
