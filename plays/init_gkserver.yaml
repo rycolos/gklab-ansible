@@ -11,15 +11,15 @@
       name: America/New_York
 
 #--- system update + upgrade ---
-  - name: apt update
+  - name: apt update + upgrade
     apt:
-      update_cache: yes
-      cache_valid_time: 3600
-
-  - name: apt upgrade
-    apt:
-      upgrade: full
       state: latest
+      upgrade: "full"
+      update_cache: yes
+      only_upgrade: yes
+      autoclean: yes
+      autoremove: yes
+      cache_valid_time: 3600
 
 #--- install core packages ---
   - name: install core packages
@@ -103,13 +103,13 @@
         - syncthing
       state: latest
 
-  - name: Enable syncthing service
+  - name: enable syncthing service
     ansible.builtin.systemd:
       name: "syncthing@{{ user }}.service"
       enabled: true
       masked: no
   
-  - name: Start syncthing service
+  - name: start syncthing service
     service:
       name: "syncthing"
       state: "started"
@@ -180,8 +180,8 @@
       group: "{{ user }}"
       state: directory
 
-#--- clone gkserver repo for utilities and config
-  - name: clone gkserver-config repo
+#--- clone gkserver repo for scripts and docker compose
+  - name: clone gkserver-machine repo
     git:
       repo: https://github.com/rycolos/gkserver-machine.git
       dest: /home/{{ user }}/gkserver
@@ -194,7 +194,7 @@
       minute: "0"
       hour: "2"
       weekday: "5"
-      job: /home/{{ user }}/gkserver/scripts/trash_clean.sh && echo "/home/{{ user }}/gkserver/scripts/trash_clean.sh" | python3 /home/{{ user }}/gkserver/scripts/discord-pipe.py
+      job: /home/{{ user }}/gkserver/scripts/trash_clean.sh && echo "/home/{{ user }}/gkserver/scripts/trash_clean.sh"
       state: present
 
   - name: cron - music library backup
@@ -203,7 +203,7 @@
       minute: "0"
       hour: "0"
       weekday: "0"
-      job: /home/{{ user }}/gkserver/scripts/plex_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/plex_gkserver_backup.sh" | python3 /home/{{ user }}/gkserver/scripts/discord-pipe.py
+      job: /home/{{ user }}/gkserver/scripts/plex_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/plex_gkserver_backup.sh"
       state: present
 
   - name: cron - home to backup_main
@@ -211,14 +211,14 @@
       name: "home to backup_main - daily 2am"
       minute: "0"
       hour: "2"
-      job: /home/{{ user }}/gkserver/scripts/home_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/home_gkserver_backup.sh" | python3 /home/{{ user }}/gkserver/scripts/discord-pipe.py
+      job: /home/{{ user }}/gkserver/scripts/home_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/home_gkserver_backup.sh"
 
   - name: cron - docker-data to backup_main
     cron:
       name: "docker-data to backup_main - daily 3am"
       minute: "0"
       hour: "3"
-      job: /home/{{ user }}/gkserver/scripts/docker_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/docker_gkserver_backup.sh" | python3 /home/{{ user }}/gkserver/scripts/discord-pipe.py
+      job: /home/{{ user }}/gkserver/scripts/docker_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/docker_gkserver_backup.sh"
       state: present
 
   - name: cron - backup_main to gdrive
@@ -227,7 +227,7 @@
       minute: "0"
       hour: "2"
       weekday: "6"
-      job: /home/{{ user }}/gkserver/scripts/gdrive_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/gdrive_gkserver_backup.sh" | python3 /home/{{ user }}/gkserver/scripts/discord-pipe.py
+      job: /home/{{ user }}/gkserver/scripts/gdrive_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/gdrive_gkserver_backup.sh"
       state: present
 
   - name: cron - summarize backup logs
@@ -235,5 +235,5 @@
       name: "summarize backup logs - daily 4am"
       minute: "0"
       hour: "4"
-      job: tail -n 5 /home/{{ user }}/logs/*_backup.log > /home/{{user}}/logs/summary.log && echo "tail -n 5 /home/{{ user }}/logs/*_backup.log > /home/{{user}}/logs/summary.log" | python3 /home/{{ user }}/gkserver/scripts/discord-pipe.py
+      job: tail -n 5 /home/{{ user }}/logs/*_backup.log > /home/{{user}}/logs/summary.log && echo "tail -n 5 /home/{{ user }}/logs/*_backup.log > /home/{{user}}/logs/summary.log"
       state: present
