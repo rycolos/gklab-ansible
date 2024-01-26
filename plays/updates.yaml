@@ -23,7 +23,8 @@
   #UPDATE DOCKER
   - name: Update docker containers
     shell:
-      cmd: "docker compose pull && docker compose up -d"
+      #cmd: "docker compose pull && docker compose up -d"
+      cmd: for f in *__docker-compose.yml; do docker compose -f $f pull && docker compose -f $f up -d --remove-orphans; done
       chdir: "{{ docker_dir }}"
     register: docker_result
   
