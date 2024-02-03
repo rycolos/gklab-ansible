@@ -1,4 +1,4 @@
-- hosts: gkserver
+- hosts: apt_docker
   become: yes
   vars:
     docker_dir: /home/kepler/gkserver/docker-compose/
@@ -25,20 +25,8 @@
     shell:
       #cmd: for f in *__docker-compose.yml; do docker compose -f $f pull && docker compose -f $f up -d --remove-orphans; done
       cmd: |
-        docker compose \
-          -f etc__docker-compose.yml \
-          -f home__docker-compose.yml \
-          -f media__docker-compose.yml \
-          -f network__docker-compose.yml \
-          pull \
-        && \
-        docker compose \
-          -f etc__docker-compose.yml \
-          -f home__docker-compose.yml \
-          -f media__docker-compose.yml \
-          -f network__docker-compose.yml \
-          up -d \
-          --remove-orphans
+        docker compose pull
+        docker compose up -d --remove-orphans
       chdir: "{{ docker_dir }}"
     register: docker_result
   

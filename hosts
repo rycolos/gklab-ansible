@@ -3,16 +3,36 @@ gkservers:
     gkserver:
       ansible_host: 192.168.1.87
       ansible_user: kepler
-      #host_key_checking: False
       ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-gks
   
 piholes:
   hosts:  
     orangepihole:
       ansible_host: 192.168.1.202
-      #host_key_checking: False
       ansible_user: orangepi
       ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-oph
 
-#ssh -i mba-oph orangepi@192.168.1.202
+apt_docker:
+  hosts:
+    gkserver:
+      ansible_host: 192.168.1.87
+      ansible_user: kepler
+      ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-gks
+  
+    orangepihole:
+      ansible_host: 192.168.1.202
+      ansible_user: orangepi
+      ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-oph
+
+apt:
+  hosts:
+    birdz:
+      ansible_host: 192.168.1.240
+      ansible_user: sarah
+      ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-brd
+    
+    piaware:
+      ansible_host: 192.168.1.82
+      ansible_user: pi
+      ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-pa
 

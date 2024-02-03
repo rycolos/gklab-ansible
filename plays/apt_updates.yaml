@@ -1,0 +1,29 @@
+- hosts: apt
+  become: yes
+
+  tasks:
+  #UPDATE PACKAGES - update /etc/needrestart/needrestart.conf for auto-service restart
+    #https://askubuntu.com/a/1421221
+  - name: Update packages
+    apt:
+      state: latest
+      upgrade: "full"
+      update_cache: yes
+      only_upgrade: yes
+      autoclean: yes
+      autoremove: yes
+      cache_valid_time: 3600
+    register: apt_result
+
+  - name: Show Output
+    debug: msg="{{ apt_result.stdout_lines }}"
+  
+  #REBOOT IF REQUIRED - see: https://aaronsaray.com/2021/ansible-reboot-if-required/
+  - name: Check if reboot required
+    stat:
+      path: /var/run/reboot-required
+    register: reboot_required_file
+
+  - name: Reboot if required
+    reboot:
+    when: reboot_required_file.stat.exists == true

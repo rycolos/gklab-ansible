@@ -1,4 +1,4 @@
-- hosts: gkservers
+- hosts: gkserver
   become: yes
   vars:
     user: kepler
