@@ -1,7 +1,8 @@
 - hosts: apt_docker
   become: yes
-  vars:
-    docker_dir: /home/kepler/gkserver/docker-compose/
+  # vars:
+  #   gk_docker_dir: /home/kepler/gkserver/docker-compose/
+  #   oph_docker_dir: /home/orangepi/docker-compose/
 
   tasks:
   #UPDATE PACKAGES - update /etc/needrestart/needrestart.conf for auto-service restart
@@ -21,17 +22,23 @@
     debug: msg="{{ apt_result.stdout_lines }}"
 
   #UPDATE DOCKER
-  - name: Update docker containers
+  - name: GK - Update docker containers
     shell:
-      #cmd: for f in *__docker-compose.yml; do docker compose -f $f pull && docker compose -f $f up -d --remove-orphans; done
-      cmd: |
-        docker compose pull
-        docker compose up -d --remove-orphans
+      cmd: "docker compose pull && docker compose up -d --remove-orphans"
       chdir: "{{ docker_dir }}"
     register: docker_result
   
   - name: Show Output
     debug: msg="{{ docker_result.stdout_lines }}"
+  
+  # - name: OPH - Update docker containers
+  #   shell:
+  #     cmd: "docker compose pull && docker compose up -d --remove-orphans"
+  #     chdir: "{{ oph_docker_dir }}"
+  #   register: oph_docker_result
+  
+  # - name: Show Output
+  #   debug: msg="{{ oph_docker_result.stdout_lines }}"
   
   #REBOOT IF REQUIRED - see: https://aaronsaray.com/2021/ansible-reboot-if-required/
   - name: Check if reboot required

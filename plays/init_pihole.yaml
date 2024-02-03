@@ -56,3 +56,5 @@
       groups: docker
       append: yes
       state: present
+
+#then need to manually create docker-compose file and update for this system

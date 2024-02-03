@@ -4,6 +4,7 @@ gkservers:
       ansible_host: 192.168.1.87
       ansible_user: kepler
       ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-gks
+      docker_dir: /home/kepler/gkserver/docker-compose/
   
 piholes:
   hosts:  
@@ -11,6 +12,7 @@ piholes:
       ansible_host: 192.168.1.202
       ansible_user: orangepi
       ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-oph
+      docker_dir: /home/orangepi/docker-compose/
 
 apt_docker:
   hosts:
@@ -18,12 +20,14 @@ apt_docker:
       ansible_host: 192.168.1.87
       ansible_user: kepler
       ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-gks
+      docker_dir: /home/kepler/gkserver/docker-compose/
   
     orangepihole:
       ansible_host: 192.168.1.202
       ansible_user: orangepi
       ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-oph
-
+      docker_dir: /home/orangepi/docker-compose/
+  
 apt:
   hosts:
     birdz:
