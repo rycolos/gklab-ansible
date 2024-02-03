@@ -1,4 +1,4 @@
-- hosts: apt
+- hosts: gkserver
   become: yes
   vars:
     docker_dir: /home/kepler/gkserver/docker-compose/
