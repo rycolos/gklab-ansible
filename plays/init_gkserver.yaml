@@ -180,7 +180,7 @@
       group: "{{ user }}"
       state: directory
 
-#--- clone gkserver repo for scripts and docker compose
+#--- clone gkserver repo for scripts and docker compose ---
   - name: clone gkserver-machine repo
     git:
       repo: https://github.com/rycolos/gkserver-machine.git
@@ -237,3 +237,10 @@
       hour: "4"
       job: tail -n 5 /home/{{ user }}/logs/*_backup.log > /home/{{user}}/logs/summary.log && echo "tail -n 5 /home/{{ user }}/logs/*_backup.log > /home/{{user}}/logs/summary.log"
       state: present
+  
+  #--- configure passwordless sudo ---
+  - name: set passwordless sudo for {{ user }}
+    lineinfile:
+      path: "/etc/sudoers"
+      line: "{{ user }} ALL=(ALL) NOPASSWD: ALL"
+      insertafter: "@includedir /etc/sudoers.d"
