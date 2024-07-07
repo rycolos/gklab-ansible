@@ -9,8 +9,8 @@ gkservers:
 piholes:
   hosts:  
     orangepihole:
-      ansible_host: 192.168.1.202
-      ansible_user: orangepi
+      ansible_host: 192.168.1.205
+      ansible_user: dietpi
       ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-oph
       docker_dir: /home/{{ ansible_user }}/docker-compose/
 
@@ -23,8 +23,8 @@ apt_docker:
       docker_dir: /home/{{ ansible_user }}/gkserver/docker-compose/
   
     orangepihole:
-      ansible_host: 192.168.1.202
-      ansible_user: orangepi
+      ansible_host: 192.168.1.205
+      ansible_user: dietpi
       ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-oph
       docker_dir: /home/{{ ansible_user }}/docker-compose/
   
