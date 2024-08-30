@@ -158,23 +158,23 @@
 
   - name: create backup hdd mount point
     file:
-      path: "/media/backup_main"
+      path: "/media/backup_int1"
       mode: 0775
       owner: "{{ user }}"
       group: "{{ user }}"
       state: directory
  
-  - name: create plex hdd mount point
+  - name: create media hdd mount point
     file:
-      path: "/media/plex_library"
+      path: "/media/media_library"
       mode: 0775
       owner: "{{ user }}"
       group: "{{ user }}"
       state: directory
 
-  - name: create ext backup mount point
+  - name: create external backup mount point
     file:
-      path: "/media/backup2_ext"
+      path: "/media/backup_ext1"
       mode: 0775
       owner: "{{ user }}"
       group: "{{ user }}"
@@ -187,7 +187,7 @@
       dest: /home/{{ user }}/gkserver
     become_user: "{{ user }}"
 
-#--- create cronjobs ---
+#--- create cronjobs, but comment out ---
   - name: cron - retention policy
     cron:
       name: "retention policy - sat 2am"
@@ -195,6 +195,7 @@
       hour: "2"
       weekday: "5"
       job: /home/{{ user }}/gkserver/scripts/trash_clean.sh && echo "/home/{{ user }}/gkserver/scripts/trash_clean.sh"
+      disable: true
       state: present
 
   - name: cron - music library backup
@@ -204,6 +205,7 @@
       hour: "0"
       weekday: "0"
       job: /home/{{ user }}/gkserver/scripts/plex_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/plex_gkserver_backup.sh"
+      disable: true
       state: present
 
   - name: cron - home to backup_main
@@ -212,6 +214,8 @@
       minute: "0"
       hour: "2"
       job: /home/{{ user }}/gkserver/scripts/home_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/home_gkserver_backup.sh"
+      disable: true
+      state: present
 
   - name: cron - docker-data to backup_main
     cron:
@@ -219,6 +223,7 @@
       minute: "0"
       hour: "3"
       job: /home/{{ user }}/gkserver/scripts/docker_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/docker_gkserver_backup.sh"
+      disable: true
       state: present
 
   - name: cron - backup_main to gdrive
@@ -228,6 +233,7 @@
       hour: "2"
       weekday: "6"
       job: /home/{{ user }}/gkserver/scripts/gdrive_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/gdrive_gkserver_backup.sh"
+      disable: true
       state: present
 
   - name: cron - summarize backup logs
@@ -236,6 +242,7 @@
       minute: "0"
       hour: "4"
       job: tail -n 5 /home/{{ user }}/logs/*_backup.log > /home/{{user}}/logs/summary.log && echo "tail -n 5 /home/{{ user }}/logs/*_backup.log > /home/{{user}}/logs/summary.log"
+      disable: true
       state: present
   
   #--- configure passwordless sudo ---
