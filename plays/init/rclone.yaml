@@ -1,0 +1,40 @@
+- hosts: hosaka
+  become: yes
+  vars:
+    user: ryan
+
+  tasks:
+  - name: create temp rclone install directory
+    ansible.builtin.file:
+      path: "/tmp/rclone_install"
+      mode: 0775
+      state: directory
+
+  - name: download and unzip rclone binary
+    ansible.builtin.unarchive:
+      src: https://downloads.rclone.org/rclone-current-linux-amd64.zip
+      dest: "/tmp/rclone_install"
+      remote_src: true
+      mode: 0755
+  
+  - name: Get list of files extracted from the rclone archive
+    ansible.builtin.find:
+      path: "/tmp/rclone_install"
+      depth: 2
+      file_type: directory
+    register: rclone_archive
+  
+  - name: copy rclone binary to install location
+    ansible.builtin.copy:
+      src: "{{ rclone_archive.files[0].path }}/rclone"
+      dest: "/usr/bin/"
+      mode: 0755
+      owner: "root"
+      group: "root"
+      force: true
+      remote_src: true
+
+  - name: delete temp rclone install directory
+    ansible.builtin.file:
+      path: "/tmp/rclone_install"
+      state: absent

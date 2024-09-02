@@ -5,6 +5,13 @@ gkservers:
       ansible_user: kepler
       ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-gks
       docker_dir: /home/{{ ansible_user }}/gkserver/docker-compose/
+    
+    hosaka:
+      ansible_host: 192.168.1.244
+      ansible_user: ryan
+      ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba_hosaka
+      ssh_public_key_file: /Users/ryanlaliberty/.ssh/mba_hosaka.pub
+      docker_dir: /home/{{ ansible_user }}/gkserver/docker-compose/
   
 piholes:
   hosts:  
@@ -20,6 +27,13 @@ apt_docker:
       ansible_host: 192.168.1.87
       ansible_user: kepler
       ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-gks
+      docker_dir: /home/{{ ansible_user }}/gkserver/docker-compose/
+
+    hosaka:
+      ansible_host: 192.168.1.244
+      ansible_user: ryan
+      ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba_hosaka
+      ssh_public_key_file: /Users/ryanlaliberty/.ssh/mba_hosaka.pub
       docker_dir: /home/{{ ansible_user }}/gkserver/docker-compose/
   
     orangepihole:

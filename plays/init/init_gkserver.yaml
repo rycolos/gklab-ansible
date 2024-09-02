@@ -1,7 +1,7 @@
-- hosts: gkserver
+- hosts: hosaka
   become: yes
   vars:
-    user: kepler
+    user: ryan
 
   tasks:
   
@@ -9,6 +9,35 @@
   - name: set timezone to NY
     timezone:
       name: America/New_York
+
+#--- add ssh pub key, load sshd config ---
+  - name: Add SSH public key for user
+    authorized_key:
+      user: ryan
+      key: "{{ lookup('file', '{{ ssh_public_key_file }}' ) }}"
+      state: present
+
+  - name: Add hardened SSH config
+    copy:
+      dest: /etc/ssh/sshd_config.d/
+      src: ../files/00-sshd-custom.conf
+      owner: root
+      group: root
+      mode: 0600
+    notify: Reload SSH
+
+  - name: Reload SSH
+    service:
+      name: ssh
+      state: restarted
+
+  #--- configure passwordless sudo ---
+  - name: set passwordless sudo for {{ user }}
+    lineinfile:
+      path: "/etc/sudoers"
+      line: "{{ user }} ALL=(ALL) NOPASSWD: ALL"
+      insertafter: "@includedir /etc/sudoers.d"
+
 
 #--- system update + upgrade ---
   - name: apt update + upgrade
@@ -22,7 +51,7 @@
       cache_valid_time: 3600
 
 #--- install core packages ---
-  - name: install core packages
+  - name: install core packages, docker prereq
     apt:
       name: 
         - htop
@@ -34,27 +63,23 @@
         - lm-sensors
         - rclone
         - fish
-        - curl
         - tree
         - vim
         - smartmontools
         - unzip
+        - zip
         - sysstat
         - net-tools
         - neofetch
+        - iotop
+        - htop
+        - iftop
+        - hdparm
+        - rsync
+        - parted
       state: latest
 
-#--- install docker ---
-  - name: install required docker packages
-    apt:
-      name:
-        - ca-certificates
-        - curl
-        - gnupg
-        - lsb-release
-        - software-properties-common
-      state: latest
-  
+#--- install docker, docker compose ---
   - name: add docker gpg apt key
     apt_key:
       url: https://download.docker.com/linux/ubuntu/gpg
@@ -65,9 +90,14 @@
       repo: deb https://download.docker.com/linux/ubuntu focal stable
       state: present 
   
-  - name: install docker and docker-compose
+  - name: install docker prereq, docker community edition, and docker compose
     apt:
       name:
+        - ca-certificates
+        - curl
+        - gnupg
+        - lsb-release
+        - software-properties-common
         - docker-ce
         - docker-ce-cli
         - containerd.io  
@@ -115,6 +145,42 @@
       state: "started"
       enabled: true
 
+#--- install rclone ---
+  - name: create temp rclone install directory
+    ansible.builtin.file:
+      path: "/tmp/rclone_install"
+      mode: 0775
+      state: directory
+
+  - name: download and unzip rclone binary
+    ansible.builtin.unarchive:
+      src: https://downloads.rclone.org/rclone-current-linux-amd64.zip
+      dest: "/tmp/rclone_install"
+      remote_src: true
+      mode: 0755
+  
+  - name: get list of files extracted from the rclone archive
+    ansible.builtin.find:
+      path: "/tmp/rclone_install"
+      depth: 2
+      file_type: directory
+    register: rclone_archive
+  
+  - name: copy rclone binary to install location
+    ansible.builtin.copy:
+      src: "{{ rclone_archive.files[0].path }}/rclone"
+      dest: "/usr/bin/"
+      mode: 0755
+      owner: "root"
+      group: "root"
+      force: true
+      remote_src: true
+
+  - name: delete temp rclone install directory
+    ansible.builtin.file:
+      path: "/tmp/rclone_install"
+      state: absent
+
 #--- configure git ---
   - name: set git user
     git_config:
@@ -156,31 +222,19 @@
       group: "{{ user }}"
       state: directory
 
-  - name: create backup hdd mount point
+  - name: create mount points
     file:
-      path: "/media/backup_int1"
+      path: "/media/{{ item }}"
       mode: 0775
       owner: "{{ user }}"
       group: "{{ user }}"
       state: directory
- 
-  - name: create media hdd mount point
-    file:
-      path: "/media/media_library"
-      mode: 0775
-      owner: "{{ user }}"
-      group: "{{ user }}"
-      state: directory
+      loop:
+        - backup_int1
+        - media_library
+        - backup_ext1
 
-  - name: create external backup mount point
-    file:
-      path: "/media/backup_ext1"
-      mode: 0775
-      owner: "{{ user }}"
-      group: "{{ user }}"
-      state: directory
-
-#--- clone gkserver repo for scripts and docker compose ---
+#--- clone gkserver repo for scripts and docker compose config ---
   - name: clone gkserver-machine repo
     git:
       repo: https://github.com/rycolos/gkserver-machine.git
@@ -204,7 +258,7 @@
       minute: "0"
       hour: "0"
       weekday: "0"
-      job: /home/{{ user }}/gkserver/scripts/plex_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/plex_gkserver_backup.sh"
+      job: /home/{{ user }}/gkserver/scripts/plex_gkserver_backup.sh
       disable: true
       state: present
 
@@ -213,7 +267,7 @@
       name: "home to backup_main - daily 2am"
       minute: "0"
       hour: "2"
-      job: /home/{{ user }}/gkserver/scripts/home_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/home_gkserver_backup.sh"
+      job: /home/{{ user }}/gkserver/scripts/home_gkserver_backup.sh
       disable: true
       state: present
 
@@ -222,7 +276,7 @@
       name: "docker-data to backup_main - daily 3am"
       minute: "0"
       hour: "3"
-      job: /home/{{ user }}/gkserver/scripts/docker_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/docker_gkserver_backup.sh"
+      job: /home/{{ user }}/gkserver/scripts/docker_gkserver_backup.sh
       disable: true
       state: present
 
@@ -232,7 +286,7 @@
       minute: "0"
       hour: "2"
       weekday: "6"
-      job: /home/{{ user }}/gkserver/scripts/gdrive_gkserver_backup.sh && echo "/home/{{ user }}/gkserver/scripts/gdrive_gkserver_backup.sh"
+      job: /home/{{ user }}/gkserver/scripts/gdrive_gkserver_backup.sh
       disable: true
       state: present
 
@@ -245,9 +299,3 @@
       disable: true
       state: present
   
-  #--- configure passwordless sudo ---
-  - name: set passwordless sudo for {{ user }}
-    lineinfile:
-      path: "/etc/sudoers"
-      line: "{{ user }} ALL=(ALL) NOPASSWD: ALL"
-      insertafter: "@includedir /etc/sudoers.d"
