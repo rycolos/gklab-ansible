@@ -1,0 +1,48 @@
+#--- system update + upgrade ---
+- name: apt update + upgrade
+  ansible.builtin.apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 3600
+    state: latest
+
+#--- install apt packages ---
+- name: install apt packages
+  ansible.builtin.apt:
+    name: 
+      - git
+      - htop
+      - tmux
+      - nmap
+      - wget
+      - python3-pip
+      - nano
+      - lm-sensors
+      - rclone
+      - fish
+      - tree
+      - vim
+      - smartmontools
+      - unzip
+      - zip
+      - sysstat
+      - net-tools
+      - neofetch
+      - iotop
+      - htop
+      - iftop
+      - hdparm
+      - rsync
+      - parted
+      - xz-utils
+    state: latest
+
+- name: set default shell to fish
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    shell: /usr/bin/fish
+    state: present
+
+- name: install cyberpower powerpanel UPS automation
+  ansible.builtin.apt:
+    deb: https://dl4jz3rbrsfum.cloudfront.net/software/PPL_64bit_v1.4.1.deb

@@ -1,0 +1,8 @@
+- hosts: dietpihole
+  become: yes
+
+  tasks:
+    - import_tasks: ../tasks/install_docker.yaml
+    - import_tasks: ../tasks/config_security.yaml
+
+# need to manually create docker-compose file and update for this system

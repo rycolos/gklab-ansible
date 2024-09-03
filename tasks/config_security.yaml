@@ -1,0 +1,37 @@
+  #--- add ssh pub key, load sshd config ---
+- name: Add SSH public key for user
+  ansible.builtin.authorized_key:
+    user: ryan
+    key: "{{ lookup('file', '{{ ssh_public_key_file }}' ) }}"
+    state: present
+
+- name: Add hardened SSH config
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/
+    src: ../files/00-sshd-custom.conf
+    owner: root
+    group: root
+    mode: 0600
+  notify: Reload SSH
+
+- name: Reload SSH
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+
+#--- configure passwordless sudo ---
+- name: set passwordless sudo for sudo group
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/
+    src: ../files/00-sudo-nopasswd.conf
+    owner: root
+    group: root
+    mode: 0440
+    validate: '/usr/sbin/visudo -cf %s'
+
+- name: add ansible user to sudo group
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: sudo
+    append: yes
+    state: present

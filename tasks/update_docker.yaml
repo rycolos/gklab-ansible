@@ -1,0 +1,9 @@
+- name: Update docker containers
+  shell:
+    cmd: "docker compose pull && docker compose up -d --remove-orphans"
+    chdir: "{{ docker_dir }}"
+  register: docker_result
+
+- name: Show Output
+  debug:
+    msg: "{{ docker_result.stdout_lines }}"

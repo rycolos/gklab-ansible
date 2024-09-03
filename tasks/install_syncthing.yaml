@@ -1,0 +1,34 @@
+#--- install syncthing ---
+- name: add syncthing repo to apt
+  ansible.builtin.apt_repository:
+    repo: deb https://apt.syncthing.net/ syncthing stable
+    state: present 
+
+- name: add syncthing pgp apt key
+  ansible.builtin.apt_key:
+    url: https://syncthing.net/release-key.txt
+    state: present
+
+- name: apt update
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+    state: latest
+
+- name: install syncthing
+  ansible.builtin.apt:
+    name:
+      - syncthing
+    state: latest
+
+- name: enable syncthing service
+  ansible.builtin.systemd:
+    name: "syncthing@{{ ansible_user }}.service"
+    enabled: true
+    masked: no
+
+- name: start syncthing service
+  ansible.builtin.service:
+    name: "syncthing"
+    state: "started"
+    enabled: true

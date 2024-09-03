@@ -1,0 +1,15 @@
+- hosts: hosaka
+  become: yes
+
+  tasks:
+    - import_tasks: ../tasks/core_packages.yaml
+    - import_tasks: ../tasks/install_docker.yaml
+    - import_tasks: ../tasks/install_rclone.yaml
+    - import_tasks: ../tasks/install_syncthing.yaml
+    - import_tasks: ../tasks/gkserver_repo.yaml
+    - import_tasks: ../tasks/config_git.yaml
+    - import_tasks: ../tasks/config_security.yaml
+    - import_tasks: ../tasks/config_storage.yaml
+    - import_tasks: ../tasks/backup_cronjobs.yaml
+
+

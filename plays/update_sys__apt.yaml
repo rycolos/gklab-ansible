@@ -1,0 +1,6 @@
+- hosts: update_apt
+  become: yes
+
+  tasks:
+    - import_tasks: ../tasks/update_apt.yaml
+    - import_tasks: ../tasks/update_reboot.yaml

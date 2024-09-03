@@ -1,0 +1,24 @@
+#--- configure git ---
+- name: set git user
+  ansible.builtin.git_config:
+    name: user.name
+    scope: global
+    value: "Ryan LaLiberty"
+    state: present
+  become_user: "{{ ansible_user }}"
+
+- name: set git email
+  ansible.builtin.git_config:
+    name: user.email
+    scope: global
+    value: "rycolos@gkserver.net"
+    state: present
+  become_user: "{{ ansible_user }}"
+
+- name: set git editor
+  ansible.builtin.git_config:
+    name: core.editor
+    scope: global
+    value: nano
+    state: present
+  become_user: "{{ ansible_user }}"

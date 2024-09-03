@@ -1,0 +1,13 @@
+- name: Update packages
+  apt:
+    state: latest
+    upgrade: "full"
+    update_cache: yes
+    only_upgrade: yes
+    autoclean: yes
+    autoremove: yes
+    cache_valid_time: 3600
+  register: apt_result
+
+- name: Show Output
+  debug: msg="{{ apt_result.stdout_lines }}"

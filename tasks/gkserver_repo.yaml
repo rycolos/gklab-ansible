@@ -1,0 +1,14 @@
+#--- clone gkserver repo for scripts and docker compose config ---
+- name: clone gkserver-machine repo
+  ansible.builtin.git:
+    repo: https://github.com/rycolos/gkserver-machine.git
+    dest: /home/{{ ansible_user }}/gkserver
+  become_user: "{{ ansible_user }}"
+
+- name: create dir for logs
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user }}/logs"
+    mode: 0775
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    state: directory

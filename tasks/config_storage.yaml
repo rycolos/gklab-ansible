@@ -1,0 +1,11 @@
+- name: create mount points
+  ansible.builtin.file:
+    path: "/media/{{ item }}"
+    mode: 0775
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    state: directory
+    loop:
+      - backup_int1
+      - media_library
+      - backup_ext1

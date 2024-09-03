@@ -15,13 +15,13 @@ gkservers:
   
 piholes:
   hosts:  
-    orangepihole:
+    dietpihole:
       ansible_host: 192.168.1.205
       ansible_user: dietpi
       ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-oph
       docker_dir: /home/{{ ansible_user }}/docker-compose/
 
-apt_docker:
+update_apt_docker:
   hosts:
     gkserver:
       ansible_host: 192.168.1.87
@@ -36,13 +36,13 @@ apt_docker:
       ssh_public_key_file: /Users/ryanlaliberty/.ssh/mba_hosaka.pub
       docker_dir: /home/{{ ansible_user }}/gkserver/docker-compose/
   
-    orangepihole:
+    dietpihole:
       ansible_host: 192.168.1.205
       ansible_user: dietpi
       ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-oph
       docker_dir: /home/{{ ansible_user }}/docker-compose/
   
-apt:
+update_apt:
   hosts:
     birdz:
       ansible_host: 192.168.1.240

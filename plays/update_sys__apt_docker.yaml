@@ -1,0 +1,12 @@
+- hosts: update_apt_docker
+  become: yes
+
+  tasks:
+    - import_tasks: ../tasks/update_apt.yaml
+    - import_tasks: ../tasks/update_docker.yaml
+    - import_tasks: ../tasks/update_reboot.yaml
+
+
+
+  
+
