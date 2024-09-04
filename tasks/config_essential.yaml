@@ -1,7 +1,7 @@
   #--- add ssh pub key, load sshd config ---
 - name: Add SSH public key for user
   ansible.builtin.authorized_key:
-    user: ryan
+    user: "{{ ansible_user }}"
     key: "{{ lookup('file', '{{ ssh_public_key_file }}' ) }}"
     state: present
 
@@ -35,3 +35,12 @@
     groups: sudo
     append: yes
     state: present
+
+#--- update /etc/needrestart/needrestart.conf for auto-service restart ---
+- name: create needrestart include file for auto-restart
+  ansible.builtin.copy:
+    dest: /etc/needrestart/conf.d/
+    src: ../files/00-needrestart-no-prompt.conf
+    owner: root
+    group: root
+    mode: 0600

@@ -3,6 +3,6 @@
 
   tasks:
     - import_tasks: ../tasks/install_docker.yaml
-    - import_tasks: ../tasks/config_security.yaml
+#    - import_tasks: ../tasks/config_essential.yaml #ubuntu/debian only
 
 # need to manually create docker-compose file and update for this system
