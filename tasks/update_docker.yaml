@@ -2,8 +2,18 @@
   shell:
     cmd: "docker compose pull && docker compose up -d --remove-orphans"
     chdir: "{{ docker_dir }}"
-  register: docker_result
+  register: docker_update_result
 
-- name: Show Output
+- name: Show update output
   debug:
-    msg: "{{ docker_result.stdout_lines }}"
+    msg: "{{ docker_update_result.stdout_lines }}"
+
+- name: Prune docker system
+  shell:
+    cmd: "docker system prune -f"
+    chdir: "{{ docker_dir }}"
+  register: docker_prune_result
+
+- name: Show prune output
+  debug:
+    msg: "{{ docker_prune_result.stdout_lines }}"

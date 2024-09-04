@@ -12,6 +12,10 @@ gkservers:
       ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba_hosaka
       ssh_public_key_file: /Users/ryanlaliberty/.ssh/mba_hosaka.pub
       docker_dir: /home/{{ ansible_user }}/gkserver/docker-compose/
+      mountpoints:
+        - hdd1
+        - hdd2
+        - hdd3
   
 piholes:
   hosts:  
