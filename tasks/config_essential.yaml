@@ -23,7 +23,7 @@
 - name: set passwordless sudo for sudo group
   ansible.builtin.copy:
     dest: /etc/sudoers.d/
-    src: ../files/00-sudo-nopasswd.conf
+    src: ../files/00-sudo-nopasswd
     owner: root
     group: root
     mode: 0440

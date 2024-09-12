@@ -16,6 +16,9 @@ gkservers:
         - hdd1
         - hdd2
         - hdd3
+        - syncthing
+        - backup_int1
+        - backup_ext1
   
 piholes:
   hosts:  

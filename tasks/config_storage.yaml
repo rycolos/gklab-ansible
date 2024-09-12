@@ -3,4 +3,4 @@
     path: "/mnt/{{ item }}"
     mode: 0775
     state: directory
-    loop: " {{ mountpoints }}"
+  loop: "{{ mountpoints }}"
