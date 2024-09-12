@@ -1,50 +1,41 @@
 #--- create cronjobs (disable by default) ---
 - name: retention policy
   ansible.builtin.cron:
-    name: "retention policy - sat 2am"
+    name: "retention policy - fri 1am"
     minute: "0"
-    hour: "2"
-    weekday: "5"
+    hour: "1"
+    weekday: "4"
     job: /home/{{ ansible_user }}/gkserver/scripts/trash_clean.sh
-    disable: true
+    disabled: true
     state: present
 
-- name: music library backup
+- name: media library backup
   ansible.builtin.cron:
-    name: "music library backup - sun 12am"
+    name: "media library backup - sat 12am"
     minute: "0"
     hour: "0"
-    weekday: "0"
-    job: /home/{{ ansible_user }}/gkserver/scripts/plex_gkserver_backup.sh
-    disable: true
+    weekday: "5"
+    job: /home/{{ ansible_user }}/gkserver/scripts/media_gkserver_backup.sh
+    disabled: true
     state: present
 
-- name: home to backup_main
+- name: docker-data backup
   ansible.builtin.cron:
-    name: "home to backup_main - daily 2am"
-    minute: "0"
-    hour: "2"
-    job: /home/{{ ansible_user }}/gkserver/scripts/home_gkserver_backup.sh
-    disable: true
-    state: present
-
-- name: docker-data to backup_main
-  ansible.builtin.cron:
-    name: "docker-data to backup_main - daily 3am"
+    name: "docker-data backup - daily 3am"
     minute: "0"
     hour: "3"
     job: /home/{{ ansible_user }}/gkserver/scripts/docker_gkserver_backup.sh
-    disable: true
+    disabled: true
     state: present
 
-- name: backup_main to gdrive
+- name: rclone B2 backup
   ansible.builtin.cron:
-    name: "backup_main to gdrive - sun 2am"
+    name: "rclone B2 backup - sun 2am"
     minute: "0"
     hour: "2"
     weekday: "6"
-    job: /home/{{ ansible_user }}/gkserver/scripts/gdrive_gkserver_backup.sh
-    disable: true
+    job: /home/{{ ansible_user }}/gkserver/scripts/b2_gkserver_backup.sh
+    disabled: true
     state: present
 
 - name: summarize backup logs
@@ -53,5 +44,5 @@
     minute: "0"
     hour: "4"
     job: tail -n 5 /home/{{ ansible_user }}/logs/*_backup.log > /home/{{ansible_user}}/logs/summary.log
-    disable: true
+    disabled: true
     state: present
