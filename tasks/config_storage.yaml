@@ -3,4 +3,6 @@
     path: "/mnt/{{ item }}"
     mode: 0775
     state: directory
+    owner: "{{ ansible_user}}"
+    group: "{{ ansible_user }}"
   loop: "{{ mountpoints }}"
