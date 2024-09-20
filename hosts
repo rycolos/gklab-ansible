@@ -19,6 +19,7 @@ gkservers:
         - syncthing
         - backup_int1
         - backup_ext1
+        - library_mfs
   
 piholes:
   hosts:  
@@ -30,12 +31,6 @@ piholes:
 
 update_apt_docker:
   hosts:
-    gkserver:
-      ansible_host: 192.168.1.87
-      ansible_user: kepler
-      ansible_ssh_private_key_file: /Users/ryanlaliberty/.ssh/mba-gks
-      docker_dir: /home/{{ ansible_user }}/gkserver/docker-compose/
-
     hosaka:
       ansible_host: 192.168.1.244
       ansible_user: ryan
